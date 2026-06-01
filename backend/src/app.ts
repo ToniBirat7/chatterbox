@@ -1,162 +1,165 @@
 import express from "express";
-import { apiRouter, authRouter } from "./routes/index.js";
+import { apiRouter, authRouter, healthRouter } from "./routes/index.js";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { authenticateJWTSocket } from "./middleware/middleware.js";
-import { Conversation } from "./model/chat.model.js";
-import { GroupChat } from "./model/group_chat.model.js";
+import { prisma } from "./lib/prisma.js";
+import { FRONTEND_URL } from "./config/index.js";
 
-const app = express(); // Express Server
-const server = createServer(app); // HTTP Server to Handle Both HTTP1.1 and HTTP2 i.e Upgrade to WebSocket
+const app = express();
+const server = createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: FRONTEND_URL,
     methods: ["GET", "POST"],
+    credentials: true,
   },
-}); // Socket Server for Ws Connection
+});
 
-// Middleware for Socket JWT
 io.use(authenticateJWTSocket);
 
-// Track of joined memebers in the group
-const socket_member = new Map<string, Member>();
+// Track online members: userId → Member
+const onlineMembers = new Map<string, Member>();
 
 io.on("connection", (socket) => {
-  console.log("✓ User connected:", socket.id);
-  socket.send({ sender: "Server", msg: socket.id });
+  const user = socket.data.user as Member & { id: string };
+  const userId = user.id;
 
-  // Global Room where every user joins
-  socket.on("join-room", (roomId) => {
-    const userId = socket.data.user._id;
+  // Each user joins their OWN room so they receive messages addressed to them
+  socket.join(userId);
 
-    // Check if this user is already in the map (preventing duplicates)
-    const isNewUser = !socket_member.has(userId);
+  const isNewUser = !onlineMembers.has(userId);
 
+  if (isNewUser) {
+    const member: Member = {
+      id: userId,
+      name: user.name,
+      status: true,
+      avatar: user.name.split(" ")[0]?.[0]?.toUpperCase() ?? "?",
+    };
+
+    // Broadcast new member to others in global room
+    socket.to("_chat_room").emit("member", member);
+
+    // Send existing online members to new user
+    socket.emit("member", Array.from(onlineMembers.values()));
+
+    onlineMembers.set(userId, member);
+  } else {
+    // Reconnect: send current member list
+    socket.emit("member", Array.from(onlineMembers.values()));
+  }
+
+  // Join global group chat room
+  socket.on("join-room", (roomId: string) => {
+    socket.join(roomId);
     if (isNewUser) {
-      console.log("Adding in the room:", roomId);
-
-      socket.join(roomId);
-
-      // Prepare Memeber
-      const member = socket.data.user;
-      member.status = true;
-      member.avatar = member.name.split(" ")[0];
-
-      // Broadcast to OTHER users in room (not including sender)
-      socket.to(roomId).emit("member", member);
-
-      // Add itself in the chat
-      socket.emit("member", Array.from(socket_member.values()));
-
-      // Add the socket in the Map
-      socket_member.set(userId, member);
-
-      console.log(`"Member ${member.name} Joined Room ${roomId}"`);
-    } else {
-      console.log(
-        `"Member ${socket.data.user.name} reconnected - already in room ${roomId}"`
-      );
+      const member = onlineMembers.get(userId);
+      if (member) socket.to(roomId).emit("member", member);
     }
   });
 
-  // When a user clicks a user in the SidebarUI, unique room is created for this user, Utilize this room for 1 to 1 chat
-  socket.on("private-room", (privateRoomId) => {
-    console.log("Private-Room : ", privateRoomId);
-    socket.join(privateRoomId);
+  // 1-on-1 private message
+  socket.on("send_private_message", async (msg: { id: string; text: string; sender: string; timestamp: string | Date }, receiverId: string) => {
+    try {
+      const text = msg.text?.trim();
+      if (!text || text.length > 2000) return;
+
+      await prisma.conversation.create({
+        data: {
+          senderId: userId,
+          receiverId,
+          message: text,
+          timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+        },
+      });
+
+      // Send to receiver (in their own room)
+      io.to(receiverId).emit("receive_private_message", {
+        ...msg,
+        text,
+        sender: user.name,
+        senderId: userId,
+      });
+
+      // Confirm back to sender
+      io.to(userId).emit("receive_private_message", {
+        ...msg,
+        text,
+        sender: "user",
+        senderId: userId,
+      });
+    } catch (err) {
+      console.error("Error saving private message:", err);
+      socket.emit("message_error", { error: "Failed to send message" });
+    }
   });
 
-  // Event listner for 1 to 1 chat
-  socket.on("send_private_message", async (msg, receiverId) => {
-    const sender = socket.data.user;
+  // Group message
+  socket.on("send_message", async (grpMsg: { id: string; text: string; sender: string; timestamp: string | Date }, roomId: string) => {
+    try {
+      const text = grpMsg.text?.trim();
+      if (!text || text.length > 2000) return;
 
-    // user rooms
-    const receiverRoom = `${receiverId}`;
-    const senderRoom = `${sender._id}`;
+      await prisma.groupMessage.create({
+        data: {
+          senderId: userId,
+          roomId,
+          message: text,
+          timestamp: grpMsg.timestamp ? new Date(grpMsg.timestamp) : new Date(),
+        },
+      });
 
-    // Save to DB with correct format
-    await Conversation.create({
-      sender: sender._id,
-      receiver: receiverId,
-      message: msg.text,
-      timestamp: msg.timestamp,
-    });
+      // Broadcast to others in room
+      socket.to(roomId).emit("receive_message", {
+        ...grpMsg,
+        text,
+        sender: user.name,
+        senderId: userId,
+        receiver: roomId,
+      });
 
-    // message for receiver
-    const messageToReceiver = {
-      ...msg,
-      sender: sender.name,
-    };
-
-    // message for sender
-    const messageToSender = {
-      ...msg,
-      sender: "user",
-    };
-
-    // to receiver
-    io.to(receiverRoom).emit("receive_private_message", messageToReceiver);
-
-    // to sender (for instant UI update)
-    io.to(senderRoom).emit("receive_private_message", messageToSender);
-  });
-
-  // Individual Message from Global Group Chat
-  socket.on("send_message", async (grpMsg, roomId) => {
-    console.log("Received Msg : ", grpMsg);
-
-    const sender = socket.data.user;
-
-    // Save to DB with correct format
-    await GroupChat.create({
-      sender: sender._id,
-      receiver: roomId,
-      message: grpMsg.text,
-      timestamp: grpMsg.timestamp,
-    });
-
-    // Message for other members in the room
-    const messageToOthers = {
-      ...grpMsg,
-      sender: sender.name,
-    };
-
-    // Message for sender (mark as "user")
-    const messageToSender = {
-      ...grpMsg,
-      sender: "user",
-    };
-
-    // Broadcast to others in room
-    socket.to(roomId).emit("receive_message", messageToOthers);
-
-    // Send back to sender (for instant UI update)
-    socket.emit("receive_message", messageToSender);
+      // Confirm back to sender
+      socket.emit("receive_message", {
+        ...grpMsg,
+        text,
+        sender: "user",
+        senderId: userId,
+        receiver: roomId,
+      });
+    } catch (err) {
+      console.error("Error saving group message:", err);
+      socket.emit("message_error", { error: "Failed to send message" });
+    }
   });
 
   socket.on("disconnect", () => {
-    console.log("✗ User disconnected:", socket.id);
-    // Remove user from map on disconnect if you want
-    const userId = socket.data.user._id;
-    socket_member.delete(userId);
+    onlineMembers.delete(userId);
+    // Notify global room that user left
+    socket.to("_chat_room").emit("member_left", { id: userId });
+  });
+
+  socket.on("error", (err) => {
+    console.error("Socket error:", err);
   });
 });
 
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true, // Allow Cookies to be sent to the CORS
+    origin: FRONTEND_URL,
+    credentials: true,
   })
 );
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(cookieParser());
 
 // Routes
+app.use("/health", healthRouter);
 app.use("/auth", authRouter);
 app.use("/api/v1", apiRouter);
 

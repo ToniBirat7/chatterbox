@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { validateEmail, validatePassword } from "../utils/common";
+import { AUTH_URL } from "../consts";
 
 interface FormData {
   email: string;
@@ -22,6 +23,7 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Validate form
   const validateForm = (): void => {
@@ -57,29 +59,26 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch(`${AUTH_URL}/login`, {
         method: "POST",
-        credentials: "include", // Include Any Cookies with the Request
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { msg: string };
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to create user");
+        setSubmitError(data.msg ?? "Login failed. Check your credentials.");
+        return;
       }
-      console.log("User Logged In:", data);
+
       navigate("/chat");
-    } catch (error) {
-      console.error("Login error:", error);
+    } catch {
+      setSubmitError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -110,6 +109,11 @@ const Login: React.FC = () => {
 
         {/* Login Form */}
         <div className="bg-[#1a1a1a] rounded-lg p-8 shadow-xl border border-[#3a3a3a]">
+          {submitError && (
+            <div className="mb-4 px-4 py-3 bg-red-900/30 border border-red-700 rounded-lg">
+              <p className="text-sm text-red-400">{submitError}</p>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>

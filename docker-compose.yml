@@ -1,0 +1,75 @@
+services:
+  palm-postgres:
+    image: postgres:16-alpine
+    container_name: palm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - palm_pgdata:/var/lib/postgresql/data
+    networks:
+      - palm_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  palm-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: palm-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@palm-postgres:5432/${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      BCRYPT_SALT_ROUNDS: ${BCRYPT_SALT_ROUNDS:-10}
+      PORT: 3000
+      FRONTEND_URL: ${FRONTEND_URL}
+    depends_on:
+      palm-postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3001:3000"
+    networks:
+      - palm_network
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+
+  palm-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL}
+    container_name: palm-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:80"
+    networks:
+      - palm_network
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+
+volumes:
+  palm_pgdata:
+    name: palm_pgdata
+
+networks:
+  palm_network:
+    name: palm_network
+    driver: bridge

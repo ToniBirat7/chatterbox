@@ -1,121 +1,131 @@
-// API Controller for Private Chats
-import { Conversation } from "../model/chat.model.js";
 import type { Request, Response } from "express";
+import { prisma } from "../lib/prisma.js";
 
-// getPreviousPrivateChat : Implemented
-export const getPrivateChats = async (req: Request, res: Response) => {
+const LIMIT = 50;
+
+export const getPrivateChats = async (req: Request, res: Response): Promise<void> => {
+  const currentUser = req.user!;
+  const selectedUserId = req.params["selectedUserId"];
+  const offset = parseInt((req.query["offset"] as string) ?? "0", 10);
+
+  if (!selectedUserId) {
+    res.status(400).json({ msg: "selectedUserId is required" });
+    return;
+  }
+
   try {
-    const currentUser = (req as any).user; // payload
-    const { selectedUserId } = req.params; // The other user's ID
+    const [messages, count] = await Promise.all([
+      prisma.conversation.findMany({
+        where: {
+          OR: [
+            { senderId: currentUser.id, receiverId: selectedUserId },
+            { senderId: selectedUserId, receiverId: currentUser.id },
+          ],
+        },
+        orderBy: { timestamp: "asc" },
+        skip: offset,
+        take: LIMIT,
+        include: { sender: { select: { fname: true, lname: true } } },
+      }),
+      prisma.conversation.count({
+        where: {
+          OR: [
+            { senderId: currentUser.id, receiverId: selectedUserId },
+            { senderId: selectedUserId, receiverId: currentUser.id },
+          ],
+        },
+      }),
+    ]);
 
-    console.log(
-      "Fetching chat between:",
-      currentUser._id,
-      "and",
-      selectedUserId
-    );
-
-    // Fetch all messages between the two users (both directions)
-    const messages = await Conversation.find({
-      $or: [
-        { sender: currentUser._id, receiver: selectedUserId },
-        { sender: selectedUserId, receiver: currentUser._id },
-      ],
-    })
-      .sort({ timestamp: 1 }) // Sort by oldest first
-      .limit(10)
-      .populate("sender", "fname lname") // Populate sender details
-      .populate("receiver", "fname lname") // Populate receiver details
-      .lean();
-
-    // Transform messages to match frontend format
-    const formattedMessages = messages.map((msg: any) => ({
-      id: msg._id.toString(),
+    const data = messages.map((msg) => ({
+      id: msg.id,
       text: msg.message,
       sender:
-        msg.sender._id.toString() === currentUser._id
+        msg.senderId === currentUser.id
           ? "user"
-          : msg.sender.fname,
+          : `${msg.sender.fname} ${msg.sender.lname}`,
+      senderId: msg.senderId,
       timestamp: msg.timestamp,
     }));
 
-    res.status(200).json({
-      data: formattedMessages,
-      count: formattedMessages.length,
-    });
-  } catch (error) {
-    console.error("Error fetching private chats:", error);
-    res.status(500).json({
-      err: error,
-    });
+    res.status(200).json({ data, count, offset, limit: LIMIT });
+  } catch (err) {
+    console.error("Error fetching private chats:", err);
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
-// deletePreviousPrivateChat : Not Implemented
-export const deletePrivateChats = async (req: Request, res: Response) => {
-  try {
-    const currentUser = (req as any).user;
-    const { userId } = req.params;
+export const deletePrivateChat = async (req: Request, res: Response): Promise<void> => {
+  const currentUser = req.user!;
+  const messageId = req.params["messageId"];
 
-    // Delete all messages between the two users
-    const result = await Conversation.deleteMany({
-      $or: [
-        { sender: currentUser._id, receiver: userId },
-        { sender: userId, receiver: currentUser._id },
-      ],
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Chat history deleted",
-      deletedCount: result.deletedCount,
-    });
-  } catch (error) {
-    console.error("Error deleting private chats:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to delete chat history",
-      error: error instanceof Error ? error.message : "Unknown error",
-    });
+  if (!messageId) {
+    res.status(400).json({ msg: "messageId is required" });
+    return;
   }
-};
 
-// updatePreviousPrivateChat : Not Implemented
-export const updatePrivateChats = async (req: Request, res: Response) => {
   try {
-    const { messageId } = req.params;
-    const { message } = req.body;
+    const message = await prisma.conversation.findUnique({ where: { id: messageId } });
 
     if (!message) {
-      return res.status(400).json({
-        success: false,
-        message: "Message text is required",
-      });
+      res.status(404).json({ msg: "Message not found" });
+      return;
     }
 
-    const updatedMessage = await Conversation.findByIdAndUpdate(
-      messageId,
-      { message },
-      { new: true }
-    );
-
-    if (!updatedMessage) {
-      return res.status(404).json({
-        success: false,
-        message: "Message not found",
-      });
+    if (message.senderId !== currentUser.id) {
+      res.status(403).json({ msg: "Not authorized to delete this message" });
+      return;
     }
 
-    res.status(200).json({
-      success: true,
-      data: updatedMessage,
+    await prisma.conversation.delete({ where: { id: messageId } });
+    res.status(200).json({ msg: "Message deleted" });
+  } catch (err) {
+    console.error("Error deleting message:", err);
+    res.status(500).json({ msg: "Internal server error" });
+  }
+};
+
+export const updatePrivateChat = async (req: Request, res: Response): Promise<void> => {
+  const currentUser = req.user!;
+  const messageId = req.params["messageId"];
+  const { message } = req.body as { message: string };
+
+  if (!messageId) {
+    res.status(400).json({ msg: "messageId is required" });
+    return;
+  }
+
+  if (!message?.trim()) {
+    res.status(400).json({ msg: "Message content is required" });
+    return;
+  }
+
+  if (message.trim().length > 2000) {
+    res.status(400).json({ msg: "Message too long (max 2000 chars)" });
+    return;
+  }
+
+  try {
+    const existing = await prisma.conversation.findUnique({ where: { id: messageId } });
+
+    if (!existing) {
+      res.status(404).json({ msg: "Message not found" });
+      return;
+    }
+
+    if (existing.senderId !== currentUser.id) {
+      res.status(403).json({ msg: "Not authorized to edit this message" });
+      return;
+    }
+
+    const updated = await prisma.conversation.update({
+      where: { id: messageId },
+      data: { message: message.trim() },
     });
-  } catch (error) {
-    console.error("Error updating message:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to update message",
-      error: error instanceof Error ? error.message : "Unknown error",
-    });
+
+    res.status(200).json({ msg: "Message updated", data: updated });
+  } catch (err) {
+    console.error("Error updating message:", err);
+    res.status(500).json({ msg: "Internal server error" });
   }
 };

@@ -1,19 +1,13 @@
-// src/hooks/useSocket.ts
 import { useMemo } from "react";
-import { io, Socket } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
+
+const SOCKET_URL = (import.meta.env["VITE_SOCKET_URL"] as string | undefined) ?? "http://localhost:3000";
 
 const useSocket = (): Socket<ServerToClientEvents, ClientToServerEvents> => {
-  // create socket only once (memoized)
-  const socket = useMemo<
-    Socket<ServerToClientEvents, ClientToServerEvents>
-  >(() => {
-    const s = io("http://localhost:3000", {
-      transports: ["websocket"], // use WebSocket transport
-    });
-
-    return s;
-  }, []);
-
+  const socket = useMemo<Socket<ServerToClientEvents, ClientToServerEvents>>(
+    () => io(SOCKET_URL, { transports: ["websocket"] }),
+    []
+  );
   return socket;
 };
 

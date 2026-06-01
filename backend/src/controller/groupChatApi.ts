@@ -1,50 +1,45 @@
-// Group Chat API
-
-// API Controller for Private Chats
-import { GroupChat } from "../model/group_chat.model.js";
 import type { Request, Response } from "express";
+import { prisma } from "../lib/prisma.js";
 
-export const getGroupChat = async (req: Request, res: Response) => {
+const LIMIT = 50;
+
+export const getGroupChat = async (req: Request, res: Response): Promise<void> => {
+  const currentUser = req.user!;
+  const roomId = req.params["roomId"];
+  const offset = parseInt((req.query["offset"] as string) ?? "0", 10);
+
+  if (!roomId) {
+    res.status(400).json({ msg: "roomId is required" });
+    return;
+  }
+
   try {
-    const currentUser = (req as any).user; // payload
-    const { roomId } = req.params; // Global Room Chat
+    const [messages, count] = await Promise.all([
+      prisma.groupMessage.findMany({
+        where: { roomId },
+        orderBy: { timestamp: "asc" },
+        skip: offset,
+        take: LIMIT,
+        include: { sender: { select: { fname: true, lname: true } } },
+      }),
+      prisma.groupMessage.count({ where: { roomId } }),
+    ]);
 
-    console.log(
-      "Fetching chat for the User : ",
-      currentUser._id,
-      "Group",
-      roomId
-    );
-
-    // Fetch all messages between the two users (both directions)
-    const messages = await GroupChat.find({
-      $or: [{ receiver: roomId }],
-    })
-      .sort({ timestamp: 1 }) // Sort by oldest first
-      .limit(10)
-      .populate("sender", "fname lname") // Populate sender details
-      .lean();
-
-    // Transform messages to match frontend format
-    const formattedMessages = messages.map((msg: any) => ({
-      id: msg._id.toString(),
+    const data = messages.map((msg) => ({
+      id: msg.id,
       text: msg.message,
       sender:
-        msg.sender._id.toString() === currentUser._id
+        msg.senderId === currentUser.id
           ? "user"
-          : msg.sender.fname,
-      receiver: msg.receiver,
+          : `${msg.sender.fname} ${msg.sender.lname}`,
+      senderId: msg.senderId,
+      receiver: msg.roomId,
       timestamp: msg.timestamp,
     }));
 
-    res.status(200).json({
-      data: formattedMessages,
-      count: formattedMessages.length,
-    });
-  } catch (error) {
-    console.error("Error fetching private chats:", error);
-    res.status(500).json({
-      err: error,
-    });
+    res.status(200).json({ data, count, offset, limit: LIMIT });
+  } catch (err) {
+    console.error("Error fetching group chat:", err);
+    res.status(500).json({ msg: "Internal server error" });
   }
 };

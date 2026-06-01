@@ -142,13 +142,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div className="py-2">
               {filteredUsers.map((user) => (
                 <div
-                  key={user._id}
+                  key={user.id}
                   onClick={() => {
                     onSelectUser(user);
                     onSelectGroup(null);
                   }}
                   className={`user-item ${
-                    selectedUser?._id === user._id ? "active" : ""
+                    selectedUser?._id === user.id ? "active" : ""
                   }`}
                 >
                   <div className="relative">

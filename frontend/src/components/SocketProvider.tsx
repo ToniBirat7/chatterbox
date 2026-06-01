@@ -1,4 +1,3 @@
-// React Context provider (lazy connect)
 import React, { type ReactNode, useState, useEffect } from "react";
 import useSocket from "../hooks/useSocket";
 import { useNavigate } from "react-router-dom";
@@ -11,69 +10,46 @@ const SocketContext = React.createContext<SocketContextType>({
 
 export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
   const [members, setMembers] = useState<Member[]>([]);
-  // Navigator
-  const loginNavigator = useNavigate();
+  const navigate = useNavigate();
   const socket = useSocket();
 
   useEffect(() => {
-    // Handle connection state
     const handleConnect = () => {
-      console.log("Socket connected");
-
       socket.emit("join-room", GLOBAL_ROOM);
     };
 
-    const handleDisconnect = () => {
-      console.log("Socket disconnected");
-    };
-
-    // Handle member events - ADD UNIQUE CHECK
-    const handleMember = (memberData: Member[] | [] | Member) => {
-      // console.log("Member List:", memberData);
-
-      // Always normalize to an array
-      const membersArray = Array.isArray(memberData)
-        ? memberData
-        : [memberData]; // wrap single object into array
+    const handleMember = (memberData: Member | Member[]) => {
+      const incoming = Array.isArray(memberData) ? memberData : [memberData];
 
       setMembers((prev) => {
-        // use a Map for easy deduplication
-        const map = new Map(prev.map((m) => [m._id, m]));
-
-        membersArray.forEach((member) => {
-          if (!map.has(member._id)) {
-            map.set(member._id, member);
-          } else {
-            console.log("Member already exists, skipping:", member._id);
-          }
-        });
-
+        const map = new Map(prev.map((m) => [m.id, m]));
+        incoming.forEach((m) => map.set(m.id, m));
         return Array.from(map.values());
       });
     };
 
+    const handleMemberLeft = ({ id }: { id: string }) => {
+      setMembers((prev) => prev.filter((m) => m.id !== id));
+    };
+
     const handleConnectError = (err: Error) => {
-      console.log("Socket connection error:", err.message);
-      // Redirect to login
       if (err.message.includes("Authentication failed")) {
-        loginNavigator("/");
+        navigate("/");
       }
     };
 
-    // Register listeners
     socket.on("connect", handleConnect);
-    socket.on("disconnect", handleDisconnect);
     socket.on("member", handleMember);
+    socket.on("member_left", handleMemberLeft);
     socket.on("connect_error", handleConnectError);
 
-    // Cleanup on unmount
     return () => {
       socket.off("connect", handleConnect);
-      socket.off("disconnect", handleDisconnect);
       socket.off("member", handleMember);
+      socket.off("member_left", handleMemberLeft);
       socket.off("connect_error", handleConnectError);
     };
-  }, [socket]);
+  }, [socket, navigate]);
 
   return (
     <SocketContext.Provider value={{ socket, members }}>
@@ -82,6 +58,4 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
   );
 };
 
-export const useSocketContext = () => {
-  return React.useContext(SocketContext);
-};
+export const useSocketContext = () => React.useContext(SocketContext);

@@ -1,23 +1,29 @@
-// For Routes
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import { createUser, loginUser } from "../controller/auth.js";
 import { authenticateJWTHTTP } from "../middleware/middleware.js";
-import { getPrivateChats } from "../controller/privateChatApi.js";
+import {
+  getPrivateChats,
+  deletePrivateChat,
+  updatePrivateChat,
+} from "../controller/privateChatApi.js";
 import { getGroupChat } from "../controller/groupChatApi.js";
 
-//  Auth Router
 const authRouter = Router();
 authRouter.post("/create-user", createUser);
 authRouter.post("/login", loginUser);
 
-// API Router
 const apiRouter = Router();
-
-// Middleware
 apiRouter.use(authenticateJWTHTTP);
 
 apiRouter.get("/pchat/:selectedUserId", getPrivateChats);
+apiRouter.delete("/pchat/:messageId", deletePrivateChat);
+apiRouter.patch("/pchat/:messageId", updatePrivateChat);
 
 apiRouter.get("/gchat/:roomId", getGroupChat);
 
-export { authRouter, apiRouter };
+const healthRouter = Router();
+healthRouter.get("/", (_req: Request, res: Response) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+export { authRouter, apiRouter, healthRouter };

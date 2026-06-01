@@ -1,59 +1,54 @@
-// Middlewares
 import jwt from "jsonwebtoken";
 import type { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "../config/index.js";
 import type { ExtendedError, Socket } from "socket.io";
 import cookie from "cookie";
 
-// For API
 export const authenticateJWTHTTP = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const token = req.cookies.auth_token;
+): void => {
+  const token: string | undefined = req.cookies["auth_token"];
 
-  if (!token) return res.status(401).json({ message: ", No Token Found" });
+  if (!token) {
+    res.status(401).json({ message: "No token found" });
+    return;
+  }
 
   try {
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-      if (err) {
-        return res.status(401).json({ message: "Invalid token" });
-      }
-      (req as any).user = decoded;
-      next();
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error });
+    const decoded = jwt.verify(token, JWT_SECRET) as UserJwtPayload;
+    req.user = decoded;
+    next();
+  } catch {
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 
-// For Socket
 export const authenticateJWTSocket = (
   socket: Socket,
   next: (err?: ExtendedError) => void
-) => {
+): void => {
   const cookieHeader = socket.handshake.headers.cookie;
 
   if (!cookieHeader) {
-    console.log("No Cookie Header");
-    return next(new Error("Authentication failed: no cookie"));
+    next(new Error("Authentication failed: no cookie"));
+    return;
   }
 
   const cookies = cookie.parse(cookieHeader);
   const token = cookies["auth_token"];
+
   if (!token) {
-    console.log("No auth_token in cookies");
-    return next(new Error("Authentication failed: token missing"));
+    next(new Error("Authentication failed: token missing"));
+    return;
   }
 
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    socket.data.user = payload;
+    const payload = jwt.verify(token, JWT_SECRET) as UserJwtPayload;
+    socket.data.user = payload as Member & UserJwtPayload;
     next();
-  } catch (err) {
-    console.log("JWT verification failed:", err);
+  } catch {
     next(new Error("Authentication failed: invalid token"));
   }
 };

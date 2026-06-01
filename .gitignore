@@ -1,5 +1,6 @@
 node_modules/
-.env
 dist/
-Readme.md
-tomorrow.md
+.env
+.env.local
+.env.production
+*.log

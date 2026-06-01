@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { validateEmail, validatePassword, validateName } from "../utils/common";
+import { AUTH_URL } from "../consts";
 
 interface FormData {
   fname: string;
@@ -31,6 +32,7 @@ const CreateUser: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Validate form
   const validateForm = (): void => {
@@ -81,33 +83,29 @@ const CreateUser: React.FC = () => {
     validateForm();
   };
 
-  // Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    console.log("we are submitting");
     e.preventDefault();
-
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/create-user", {
+      const response = await fetch(`${AUTH_URL}/create-user`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const data = await response.json() as { msg: string };
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to create user");
+        setSubmitError(data.msg ?? "Failed to create account. Try again.");
+        return;
       }
 
-      // Success - redirect to login
-      console.log("User created successfully:", data);
       navigate("/login");
-    } catch (error) {
-      console.error("Sign up error:", error);
+    } catch {
+      setSubmitError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -137,6 +135,11 @@ const CreateUser: React.FC = () => {
         </div>
 
         <div className="bg-[#1a1a1a] rounded-lg p-8 border border-[#3a3a3a]">
+          {submitError && (
+            <div className="mb-4 px-4 py-3 bg-red-900/30 border border-red-700 rounded-lg">
+              <p className="text-sm text-red-400">{submitError}</p>
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* First Name */}
             <div>

@@ -16,10 +16,6 @@ const Chat: React.FC = () => {
 
   const { socket, members } = useSocketContext();
 
-  console.log("Members", members);
-
-  console.log("Selected User : ", selectedUser);
-
   return (
     <div className="chat-container">
       <Sidebar
@@ -32,7 +28,7 @@ const Chat: React.FC = () => {
       {selectedGroup && (
         <GroupChatWindow selectedGroup={selectedGroup} socket={socket} />
       )}
-      {selectedUser && (
+      {selectedUser && socket && (
         <ChatWindow selectedUser={selectedUser} socket={socket} />
       )}
       {!selectedGroup && !selectedUser && <NoChat></NoChat>}
