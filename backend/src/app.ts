@@ -83,14 +83,16 @@ io.on("connection", (socket) => {
         text,
         sender: user.name,
         senderId: userId,
+        receiverId,
       });
 
-      // Confirm back to sender
+      // Confirm back to sender — include receiverId so frontend filters correctly
       io.to(userId).emit("receive_private_message", {
         ...msg,
         text,
         sender: "user",
         senderId: userId,
+        receiverId,
       });
     } catch (err) {
       console.error("Error saving private message:", err);

@@ -48,6 +48,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = (props) => {
       socket.off("member", handleMember);
       socket.off("member_left", handleMemberLeft);
       socket.off("connect_error", handleConnectError);
+      socket.disconnect();
     };
   }, [socket, navigate]);
 

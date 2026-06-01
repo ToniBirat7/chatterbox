@@ -54,8 +54,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
   // Listen for incoming private messages — filter to current conversation only
   useEffect(() => {
     const handlePrivateMessage = (newMessage: Message) => {
-      // Only accept messages from the currently selected user or our own echoed messages
-      if (newMessage.senderId !== selectedUser.id && newMessage.sender !== "user") return;
+      // Accept messages from selected user OR our own echo TO selected user
+      const fromSelectedUser = newMessage.senderId === selectedUser.id;
+      const myEchoToSelected = newMessage.sender === "user" && newMessage.receiverId === selectedUser.id;
+      if (!fromSelectedUser && !myEchoToSelected) return;
 
       setMessages((prev) => {
         if (prev.some((m) => m.id === newMessage.id)) return prev;
@@ -74,7 +76,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
     const text = inputValue.trim();
     if (!text) return;
 
-    const newMessage: Omit<Message, "senderId"> = {
+    const newMessage: Omit<Message, "senderId" | "receiverId"> = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
       text,
       sender: "user",
@@ -144,13 +146,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ selectedUser, socket }) => {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.sender === "user" ? "justify-start" : "justify-end"} animate-fade-in`}
+                className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"} animate-fade-in`}
               >
                 <div className="flex flex-col gap-1">
                   <div className={message.sender === "user" ? "message-sent" : "message-received"}>
                     <p className="text-sm">{message.text}</p>
                   </div>
-                  <span className={`text-xs text-gray-500 px-2 ${message.sender === "user" ? "text-right" : "text-left"}`}>
+                  <span className={`text-xs text-gray-500 px-2 ${message.sender === "user" ? "text-left" : "text-right"}`}>
                     {formatTime(message.timestamp)}
                   </span>
                 </div>

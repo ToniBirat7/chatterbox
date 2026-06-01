@@ -34,57 +34,54 @@ const CreateUser: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Validate form
-  const validateForm = (): void => {
+  const validateForm = (data: FormData): FormErrors => {
     const newErrors: FormErrors = {};
-
-    if (!formData.fname.trim()) {
+    if (!data.fname.trim()) {
       newErrors.fname = "First name is required";
-    } else if (!validateName(formData.fname)) {
+    } else if (!validateName(data.fname)) {
       newErrors.fname = "First name must be at least 2 characters";
     }
-
-    if (!formData.lname.trim()) {
+    if (!data.lname.trim()) {
       newErrors.lname = "Last name is required";
-    } else if (!validateName(formData.lname)) {
+    } else if (!validateName(data.lname)) {
       newErrors.lname = "Last name must be at least 2 characters";
     }
-
-    if (!formData.email.trim()) {
+    if (!data.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
+    } else if (!validateEmail(data.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-
-    if (!formData.password) {
+    if (!data.password) {
       newErrors.password = "Password is required";
-    } else if (!validatePassword(formData.password)) {
+    } else if (!validatePassword(data.password)) {
       newErrors.password = "Password must be at least 6 characters";
     }
-
-    if (!formData.address.trim()) {
+    if (!data.address.trim()) {
       newErrors.address = "Address is required";
-    } else if (formData.address.trim().length < 5) {
+    } else if (data.address.trim().length < 5) {
       newErrors.address = "Address must be at least 5 characters";
     }
-
-    setErrors(newErrors);
+    return newErrors;
   };
 
-  // Handle input change
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    validateForm();
+    const updated = { ...formData, [name]: value };
+    setFormData(updated);
+    setErrors(validateForm(updated));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 

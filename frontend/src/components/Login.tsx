@@ -25,38 +25,36 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Validate form
-  const validateForm = (): void => {
+  const validateForm = (data: FormData): FormErrors => {
     const newErrors: FormErrors = {};
-
-    if (!formData.email.trim()) {
+    if (!data.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!validateEmail(formData.email)) {
+    } else if (!validateEmail(data.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-
-    if (!formData.password) {
+    if (!data.password) {
       newErrors.password = "Password is required";
-    } else if (!validatePassword(formData.password)) {
+    } else if (!validatePassword(data.password)) {
       newErrors.password = "Password must be at least 6 characters";
     }
-
-    setErrors(newErrors);
+    return newErrors;
   };
 
-  // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    validateForm();
+    const updated = { ...formData, [name]: value };
+    setFormData(updated);
+    setErrors(validateForm(updated));
   };
 
-  // Handle form submit
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     setIsSubmitting(true);
     setSubmitError(null);

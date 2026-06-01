@@ -13,6 +13,7 @@ declare global {
     text: string;
     sender: string;
     senderId: string;
+    receiverId?: string;
     timestamp: Date | string;
   }
 
@@ -35,7 +36,7 @@ declare global {
 
   interface ClientToServerEvents {
     "join-room": (grpId: string) => void;
-    send_private_message: (newMessage: Omit<Message, "senderId">, receiverId: string) => void;
+    send_private_message: (newMessage: Omit<Message, "senderId" | "receiverId">, receiverId: string) => void;
     send_message: (newMessage: Omit<GroupMessage, "senderId">, roomId: string) => void;
   }
 
