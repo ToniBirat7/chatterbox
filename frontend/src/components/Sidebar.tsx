@@ -148,7 +148,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     onSelectGroup(null);
                   }}
                   className={`user-item ${
-                    selectedUser?._id === user.id ? "active" : ""
+                    selectedUser?.id === user.id ? "active" : ""
                   }`}
                 >
                   <div className="relative">
