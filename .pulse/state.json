@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "palm-mind-task-chat-app-not-completed-features-left",
+  "name": "Palm Mind Task(Chat App Not Completed Features left)",
+  "description": "A full-stack chat application that supports real-time group and private messaging. The backend is built with Express, Socket.IO, and MongoDB, while the frontend is a React + Vite SPA styled with Tailwind CSS. Authentication is handled with ",
+  "status": "active",
+  "statusReason": null,
+  "currentFeature": "remove prisma/migrations from backend .dockerignore",
+  "currentPhase": "deploy",
+  "milestones": [],
+  "links": [],
+  "prs": [],
+  "_conflicts": [],
+  "repo": {
+    "hasGit": true,
+    "defaultBranch": "master",
+    "currentBranch": "master",
+    "remoteUrl": "github.com/ToniBirat7/Palm_Mind_Task_Chat_Application",
+    "githubSlug": "ToniBirat7/Palm_Mind_Task_Chat_Application",
+    "lastCommit": {
+      "sha": "7c23d12",
+      "subject": "fix: remove prisma/migrations from backend .dockerignore",
+      "authoredAt": "2026-06-01T06:54:31+00:00",
+      "ageDays": 9.1
+    },
+    "dirty": false,
+    "ahead": 0,
+    "behind": 0
+  },
+  "branches": [
+    {
+      "name": "master",
+      "lastCommitAt": "2026-06-01T06:54:31+00:00",
+      "ageDays": 9.1,
+      "isCurrent": true,
+      "merged": false,
+      "linkedPrNumber": null
+    }
+  ],
+  "techStack": {
+    "languages": [
+      "JavaScript",
+      "TypeScript"
+    ],
+    "runtimes": [
+      "node"
+    ],
+    "frameworks": [
+      "React",
+      "Express",
+      "Prisma",
+      "Tailwind",
+      "Vite"
+    ],
+    "packageManager": "npm",
+    "detectedFrom": [
+      "backend/package.json",
+      "frontend/package.json"
+    ]
+  },
+  "wikiRef": {
+    "present": false,
+    "path": "wiki/",
+    "pages": null,
+    "lastIndexedAt": null
+  },
+  "architecture": {
+    "components": [
+      "backend",
+      "frontend",
+      "nginx"
+    ],
+    "summary": null,
+    "overviewDoc": "overview.md"
+  },
+  "human": {
+    "name": null,
+    "description": null,
+    "architectureSummary": null,
+    "techStackExtra": {
+      "languages": [],
+      "runtimes": [],
+      "frameworks": []
+    },
+    "notes": null,
+    "pinned": false
+  },
+  "metrics": {
+    "openTasks": 0,
+    "doingTasks": 0,
+    "doneTasks": 0,
+    "openPrs": 0,
+    "staleBranches": 0,
+    "commitsLast7d": 0,
+    "commitsLast30d": 10
+  },
+  "generatedAt": "2026-06-10T09:17:27.371354+00:00",
+  "generatedBy": "pulse-bulk@0.1.0"
+}
