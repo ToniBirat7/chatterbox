@@ -1,1 +1,25 @@
 {"id": "commit:7c23d12", "type": "commit", "at": "2026-06-01T06:54:31+00:00", "summary": "fix: remove prisma/migrations from backend .dockerignore"}
+{"id": "commit:9234c7a", "type": "commit", "at": "2026-06-10T09:31:40+00:00", "summary": "chore(pulse): track .pulse/ project state"}
+{"id": "commit:5ff18b1", "type": "commit", "at": "2026-06-01T06:51:34+00:00", "summary": "chore: add initial Prisma migration for PostgreSQL schema"}
+{"id": "commit:c806e11", "type": "commit", "at": "2026-06-01T06:41:17+00:00", "summary": "fix: correct chat alignment, message filtering, form validation, socket cleanup"}
+{"id": "commit:3ae0f81", "type": "commit", "at": "2026-06-01T06:35:39+00:00", "summary": "fix: Sidebar selectedUser comparison _id → id (Prisma migration)"}
+{"id": "commit:9d3fd55", "type": "commit", "at": "2026-06-01T06:33:58+00:00", "summary": "fix: resolve vite/client type lookup failing in Docker build"}
+{"id": "commit:ee00226", "type": "commit", "at": "2026-06-01T06:18:43+00:00", "summary": "chore: clean codebase, fix deploy blockers"}
+{"id": "commit:516144e", "type": "commit", "at": "2026-06-01T06:12:14+00:00", "summary": "chore: remove old dev docker-compose"}
+{"id": "commit:154b68d", "type": "commit", "at": "2026-06-01T06:12:14+00:00", "summary": "feat: migrate to PostgreSQL + Prisma, fix all bugs, dockerize for production"}
+{"id": "commit:e39ef1e", "type": "commit", "at": "2026-05-14T05:13:31+00:00", "summary": "Rewrite README with detailed project overview"}
+{"id": "commit:1872eb0", "type": "commit", "at": "2025-11-10T16:19:01+00:00", "summary": "feat: Complete MERN real-time chat application"}
+{"id": "commit:afebbda", "type": "commit", "at": "2025-11-10T16:16:47+00:00", "summary": "feat: Complete MERN real-time chat application"}
+{"id": "commit:812bebf", "type": "commit", "at": "2025-11-10T15:51:13+00:00", "summary": "feat: Complete MERN real-time chat application"}
+{"id": "commit:e6eb3fc", "type": "commit", "at": "2025-11-10T15:04:19+00:00", "summary": "feat: group chat api done"}
+{"id": "commit:ec7d656", "type": "commit", "at": "2025-11-10T12:20:08+00:00", "summary": "feat: private chat done but [problem] when one user tries to communicate with other two, probably UI issue check later"}
+{"id": "commit:3c3e625", "type": "commit", "at": "2025-11-10T08:25:28+00:00", "summary": "docs: api"}
+{"id": "commit:616768c", "type": "commit", "at": "2025-11-10T04:42:20+00:00", "summary": "docs: api begin"}
+{"id": "commit:98c3287", "type": "commit", "at": "2025-11-10T03:32:25+00:00", "summary": "docs: api"}
+{"id": "commit:397e515", "type": "commit", "at": "2025-11-09T20:11:21+00:00", "summary": "update: group chat done, api fetch left"}
+{"id": "commit:19ebc7b", "type": "commit", "at": "2025-11-09T19:23:47+00:00", "summary": "update: personal message done"}
+{"id": "commit:5e36da1", "type": "commit", "at": "2025-11-09T17:10:55+00:00", "summary": "update: group chat connection combination done"}
+{"id": "commit:53e796f", "type": "commit", "at": "2025-11-09T15:02:21+00:00", "summary": "update: group chat connection combination done"}
+{"id": "commit:b19dffc", "type": "commit", "at": "2025-11-09T12:25:27+00:00", "summary": "update: real group chat"}
+{"id": "commit:f207be3", "type": "commit", "at": "2025-11-09T12:20:25+00:00", "summary": "update: jwt for io complete"}
+{"id": "commit:154158b", "type": "commit", "at": "2025-11-09T12:00:28+00:00", "summary": "update: jwt for io complete"}

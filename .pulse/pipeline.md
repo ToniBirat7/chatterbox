@@ -8,5 +8,5 @@
 _How you run, build, test, and ship this project._
 
 <!-- pulse:auto:start -->
-_machine-generated pipeline summary appears here_
+React+Vite SPA <-> Express + Socket.IO API <-> Prisma/PostgreSQL; JWT auth; built and shipped via Docker.
 <!-- pulse:auto:end -->
