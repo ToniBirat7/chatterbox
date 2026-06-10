@@ -8,5 +8,5 @@
 _How you run, build, test, and ship this project._
 
 <!-- pulse:auto:start -->
-React+Vite SPA <-> Express + Socket.IO API <-> Prisma/PostgreSQL; JWT auth; built and shipped via Docker.
+Migrated to PostgreSQL + Prisma and dockerized; deploy blockers cleared and an initial Prisma migration committed. Chat alignment, message filtering, form validation, and socket cleanup fixed. Remaining: finish the outstanding chat features.
 <!-- pulse:auto:end -->

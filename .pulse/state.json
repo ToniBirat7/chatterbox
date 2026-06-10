@@ -5,7 +5,7 @@
   "description": "A full-stack chat application that supports real-time group and private messaging. The backend is built with Express, Socket.IO, and MongoDB, while the frontend is a React + Vite SPA styled with Tailwind CSS. Authentication is handled with ",
   "status": "active",
   "statusReason": null,
-  "currentFeature": "remove prisma/migrations from backend .dockerignore",
+  "currentFeature": "Production deploy hardening (Postgres/Prisma + Docker)",
   "currentPhase": "deploy",
   "milestones": [
     {
@@ -26,20 +26,20 @@
     "remoteUrl": "github.com/ToniBirat7/Palm_Mind_Task_Chat_Application",
     "githubSlug": "ToniBirat7/Palm_Mind_Task_Chat_Application",
     "lastCommit": {
-      "sha": "9234c7a",
-      "subject": "chore(pulse): track .pulse/ project state",
-      "authoredAt": "2026-06-10T09:31:40+00:00",
-      "ageDays": 0.1
+      "sha": "5c5bf1a",
+      "subject": "chore(pulse): commit tracked .pulse/ project state",
+      "authoredAt": "2026-06-10T18:15:08+00:00",
+      "ageDays": 0.0
     },
-    "dirty": true,
-    "ahead": 1,
+    "dirty": false,
+    "ahead": 2,
     "behind": 0
   },
   "branches": [
     {
       "name": "master",
-      "lastCommitAt": "2026-06-10T09:31:40+00:00",
-      "ageDays": 0.1,
+      "lastCommitAt": "2026-06-10T18:15:08+00:00",
+      "ageDays": 0.0,
       "isCurrent": true,
       "merged": false,
       "linkedPrNumber": null
@@ -78,7 +78,7 @@
       "frontend",
       "nginx"
     ],
-    "summary": "Full-stack real-time chat: Express + Socket.IO + Prisma/PostgreSQL backend, React + Vite + Tailwind SPA, JWT auth, Dockerized. Some chat features still outstanding.",
+    "summary": "MERN real-time chat (Socket.IO) migrated from MongoDB to PostgreSQL + Prisma and dockerized for production. Recent work: clearing deploy blockers, Prisma migration baseline, and chat alignment/message-filtering/socket-cleanup fixes.",
     "overviewDoc": "overview.md"
   },
   "human": {
@@ -94,14 +94,14 @@
     "pinned": false
   },
   "metrics": {
-    "openTasks": 2,
-    "doingTasks": 1,
-    "doneTasks": 2,
+    "openTasks": 1,
+    "doingTasks": 0,
+    "doneTasks": 4,
     "openPrs": 0,
     "staleBranches": 0,
-    "commitsLast7d": 1,
-    "commitsLast30d": 11,
-    "progress": 70,
+    "commitsLast7d": 2,
+    "commitsLast30d": 12,
+    "progress": 85,
     "activityDaily": [
       0,
       0,
@@ -192,14 +192,14 @@
       0,
       0,
       0,
-      1
+      2
     ],
     "activityFrom": "2026-03-13",
-    "activityTotal90d": 11,
+    "activityTotal90d": 12,
     "contributors": [
       {
         "name": "ToniBirat7",
-        "commits": 91
+        "commits": 92
       },
       {
         "name": "copilot-swe-agent[bot]",
@@ -207,6 +207,6 @@
       }
     ]
   },
-  "generatedAt": "2026-06-10T11:01:11.859033+00:00",
+  "generatedAt": "2026-06-10T18:22:33.473226+00:00",
   "generatedBy": "pulse-deep@0.1.0"
 }

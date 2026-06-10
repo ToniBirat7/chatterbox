@@ -8,7 +8,7 @@
       "source": "machine",
       "locked": false,
       "createdAt": "2026-06-10T11:00:59.608201+00:00",
-      "updatedAt": "2026-06-10T11:01:11.858128+00:00",
+      "updatedAt": "2026-06-10T18:22:33.472516+00:00",
       "note": null
     },
     {
@@ -18,27 +18,27 @@
       "source": "machine",
       "locked": false,
       "createdAt": "2026-06-10T11:00:59.608229+00:00",
-      "updatedAt": "2026-06-10T11:01:11.858151+00:00",
+      "updatedAt": "2026-06-10T18:22:33.472536+00:00",
       "note": null
     },
     {
       "id": "m:docker-deploy-fixes",
       "title": "Docker deploy fixes",
-      "status": "doing",
+      "status": "done",
       "source": "machine",
       "locked": false,
       "createdAt": "2026-06-10T11:00:59.608246+00:00",
-      "updatedAt": "2026-06-10T11:01:11.858160+00:00",
+      "updatedAt": "2026-06-10T18:22:33.472542+00:00",
       "note": null
     },
     {
       "id": "m:fix-chat-alignment-message-filtering-edge-cases",
       "title": "Fix chat alignment / message filtering edge cases",
-      "status": "todo",
+      "status": "done",
       "source": "machine",
       "locked": false,
       "createdAt": "2026-06-10T11:00:59.608265+00:00",
-      "updatedAt": "2026-06-10T11:01:11.858168+00:00",
+      "updatedAt": "2026-06-10T18:22:33.472546+00:00",
       "note": null
     },
     {
@@ -48,7 +48,7 @@
       "source": "machine",
       "locked": false,
       "createdAt": "2026-06-10T11:00:59.608280+00:00",
-      "updatedAt": "2026-06-10T11:01:11.858174+00:00",
+      "updatedAt": "2026-06-10T18:22:33.472550+00:00",
       "note": null
     }
   ]
