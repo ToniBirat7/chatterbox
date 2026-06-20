@@ -50,6 +50,36 @@
       "createdAt": "2026-06-10T11:00:59.608280+00:00",
       "updatedAt": "2026-06-10T18:22:33.472550+00:00",
       "note": null
+    },
+    {
+      "id": "m:wire-delete-edit-message-ui-to-the-existing-back",
+      "title": "Wire delete/edit message UI to the existing backend CRUD endpoints",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-20T05:45:51.304430+00:00",
+      "updatedAt": "2026-06-20T05:45:51.304448+00:00",
+      "note": null
+    },
+    {
+      "id": "m:add-message-read-receipts-using-socket-io-room-e",
+      "title": "Add message read receipts using Socket.IO room events",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-20T05:45:51.304466+00:00",
+      "updatedAt": "2026-06-20T05:45:51.304468+00:00",
+      "note": null
+    },
+    {
+      "id": "m:write-socket-io-integration-tests-for-the-edit-d",
+      "title": "Write Socket.IO integration tests for the edit/delete message flows",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-20T05:45:51.304480+00:00",
+      "updatedAt": "2026-06-20T05:45:51.304490+00:00",
+      "note": null
     }
   ]
 }
