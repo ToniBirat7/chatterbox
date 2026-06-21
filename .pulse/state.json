@@ -5,7 +5,7 @@
   "description": "A full-stack real-time chat application supporting group and private messaging. Backend uses Express, Socket.IO, and PostgreSQL via Prisma; frontend is React + Vite with Tailwind CSS. JWT authentication with Docker production setup.",
   "status": "active",
   "statusReason": null,
-  "currentFeature": "Private message delete/edit CRUD endpoints built on backend but not yet wired to the frontend",
+  "currentFeature": "Wiring message delete and edit frontend UI to existing backend CRUD endpoints",
   "currentPhase": "paused",
   "milestones": [
     {
@@ -35,6 +35,27 @@
       "due": null,
       "status": "pending",
       "source": "machine"
+    },
+    {
+      "id": "m:all-backend-crud-endpoints-wired-to-frontend-ui",
+      "title": "All backend CRUD endpoints wired to frontend UI",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
+    },
+    {
+      "id": "m:group-chat-feature-complete-with-member-manageme",
+      "title": "Group chat feature complete with member management",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
+    },
+    {
+      "id": "m:production-deploy-stable-with-zero-open-bugs",
+      "title": "Production deploy stable with zero open bugs",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
     }
   ],
   "links": [],
@@ -47,20 +68,20 @@
     "remoteUrl": "github.com/ToniBirat7/Palm_Mind_Task_Chat_Application",
     "githubSlug": "ToniBirat7/Palm_Mind_Task_Chat_Application",
     "lastCommit": {
-      "sha": "2f87839",
+      "sha": "d93163b",
       "subject": "chore(pulse): commit tracked .pulse/ project state",
-      "authoredAt": "2026-06-10T18:23:23+00:00",
-      "ageDays": 9.5
+      "authoredAt": "2026-06-20T05:46:14+00:00",
+      "ageDays": 0.9
     },
     "dirty": true,
-    "ahead": 3,
+    "ahead": 4,
     "behind": 0
   },
   "branches": [
     {
       "name": "master",
-      "lastCommitAt": "2026-06-10T18:23:23+00:00",
-      "ageDays": 9.5,
+      "lastCommitAt": "2026-06-20T05:46:14+00:00",
+      "ageDays": 0.9,
       "isCurrent": true,
       "merged": false,
       "linkedPrNumber": null
@@ -99,7 +120,7 @@
       "frontend",
       "nginx"
     ],
-    "summary": "Express + Socket.IO backend with PostgreSQL via Prisma ORM handles real-time messaging, authentication via JWT, and group/private chat. React + Vite frontend styled with Tailwind CSS. Fully Dockerized for production with a clean Prisma migration history.",
+    "summary": "Express + Socket.IO backend with PostgreSQL via Prisma and JWT authentication; React/Vite frontend with Tailwind CSS. Real-time messaging via WebSocket with group and private chat support. Dockerized for production; backend has message edit/delete endpoints not yet connected to frontend UI.",
     "overviewDoc": "overview.md",
     "graph": {
       "nodes": [
@@ -231,11 +252,10 @@
     "doneTasks": 4,
     "openPrs": 0,
     "staleBranches": 0,
-    "commitsLast7d": 0,
-    "commitsLast30d": 11,
+    "commitsLast7d": 1,
+    "commitsLast30d": 12,
     "progress": 55,
     "activityDaily": [
-      0,
       0,
       0,
       0,
@@ -324,14 +344,15 @@
       0,
       0,
       0,
+      1,
       0
     ],
-    "activityFrom": "2026-03-23",
-    "activityTotal90d": 13,
+    "activityFrom": "2026-03-24",
+    "activityTotal90d": 14,
     "contributors": [
       {
         "name": "ToniBirat7",
-        "commits": 93
+        "commits": 94
       },
       {
         "name": "copilot-swe-agent[bot]",
@@ -339,17 +360,27 @@
       }
     ]
   },
-  "generatedAt": "2026-06-20T05:45:53.891698+00:00",
-  "generatedBy": "pulse-autosync@0.1.0",
+  "generatedAt": "2026-06-21T02:19:24.158756+00:00",
+  "generatedBy": "pulse-deep@0.1.0",
   "commitGraph": [
+    {
+      "sha": "d93163b",
+      "parents": [
+        "2f87839"
+      ],
+      "refs": [
+        "master"
+      ],
+      "author": "ToniBirat7",
+      "subject": "chore(pulse): commit tracked .pulse/ project state",
+      "at": "2026-06-20T05:46:14+00:00"
+    },
     {
       "sha": "2f87839",
       "parents": [
         "5c5bf1a"
       ],
-      "refs": [
-        "master"
-      ],
+      "refs": [],
       "author": "ToniBirat7",
       "subject": "chore(pulse): commit tracked .pulse/ project state",
       "at": "2026-06-10T18:23:23+00:00"
@@ -939,16 +970,6 @@
       "author": "ToniBirat7",
       "subject": "update: jwt setup",
       "at": "2025-11-08T15:18:22+00:00"
-    },
-    {
-      "sha": "24f3bf3",
-      "parents": [
-        "98f0a29"
-      ],
-      "refs": [],
-      "author": "ToniBirat7",
-      "subject": "update: jwt setup",
-      "at": "2025-11-08T15:15:37+00:00"
     }
   ],
   "pipeline": {

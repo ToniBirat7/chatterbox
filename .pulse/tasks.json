@@ -80,6 +80,36 @@
       "createdAt": "2026-06-20T05:45:51.304480+00:00",
       "updatedAt": "2026-06-20T05:45:51.304490+00:00",
       "note": null
+    },
+    {
+      "id": "m:wire-message-delete-button-in-react-to-delete-ap",
+      "title": "Wire message delete button in React to DELETE /api/messages/:id with optimistic removal",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-21T02:19:24.158268+00:00",
+      "updatedAt": "2026-06-21T02:19:24.158275+00:00",
+      "note": null
+    },
+    {
+      "id": "m:add-inline-message-edit-form-with-socket-io-broa",
+      "title": "Add inline message edit form with Socket.IO broadcast on save",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-21T02:19:24.158287+00:00",
+      "updatedAt": "2026-06-21T02:19:24.158289+00:00",
+      "note": null
+    },
+    {
+      "id": "m:implement-group-chat-creation-and-member-managem",
+      "title": "Implement group chat creation and member management UI",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-21T02:19:24.158295+00:00",
+      "updatedAt": "2026-06-21T02:19:24.158296+00:00",
+      "note": null
     }
   ]
 }
