@@ -56,6 +56,34 @@
       "due": null,
       "status": "pending",
       "source": "machine"
+    },
+    {
+      "id": "m:all-remaining-features-implemented-message-delet",
+      "title": "All remaining features implemented: message delete, edit, and read receipts",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
+    },
+    {
+      "id": "m:production-deployment-with-persistent-storage-an",
+      "title": "Production deployment with persistent storage and CI/CD pipeline",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
+    },
+    {
+      "id": "m:all-missing-chat-features-shipped-delete-edit-re",
+      "title": "All missing chat features shipped: delete, edit, read receipts",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
+    },
+    {
+      "id": "m:production-deploy-with-persistent-postgres-volum",
+      "title": "Production deploy with persistent Postgres volume and HTTPS",
+      "due": null,
+      "status": "pending",
+      "source": "machine"
     }
   ],
   "links": [],
@@ -68,20 +96,20 @@
     "remoteUrl": "github.com/ToniBirat7/Palm_Mind_Task_Chat_Application",
     "githubSlug": "ToniBirat7/Palm_Mind_Task_Chat_Application",
     "lastCommit": {
-      "sha": "d93163b",
+      "sha": "435b605",
       "subject": "chore(pulse): commit tracked .pulse/ project state",
-      "authoredAt": "2026-06-20T05:46:14+00:00",
-      "ageDays": 0.9
+      "authoredAt": "2026-06-21T02:19:45+00:00",
+      "ageDays": 1.1
     },
     "dirty": true,
-    "ahead": 4,
+    "ahead": 5,
     "behind": 0
   },
   "branches": [
     {
       "name": "master",
-      "lastCommitAt": "2026-06-20T05:46:14+00:00",
-      "ageDays": 0.9,
+      "lastCommitAt": "2026-06-21T02:19:45+00:00",
+      "ageDays": 1.1,
       "isCurrent": true,
       "merged": false,
       "linkedPrNumber": null
@@ -120,7 +148,7 @@
       "frontend",
       "nginx"
     ],
-    "summary": "Express + Socket.IO backend with PostgreSQL via Prisma and JWT authentication; React/Vite frontend with Tailwind CSS. Real-time messaging via WebSocket with group and private chat support. Dockerized for production; backend has message edit/delete endpoints not yet connected to frontend UI.",
+    "summary": "Express + Socket.IO backend with PostgreSQL via Prisma ORM, fronted by a React + Vite + Tailwind SPA with JWT authentication. Real-time messaging uses Socket.IO rooms for group and private channels. The project migrated from MongoDB to PostgreSQL/Prisma and is Dockerized for production, but message CRUD features (edit, delete) remain unwired on the frontend.",
     "overviewDoc": "overview.md",
     "graph": {
       "nodes": [
@@ -252,11 +280,10 @@
     "doneTasks": 4,
     "openPrs": 0,
     "staleBranches": 0,
-    "commitsLast7d": 1,
-    "commitsLast30d": 12,
+    "commitsLast7d": 2,
+    "commitsLast30d": 13,
     "progress": 55,
     "activityDaily": [
-      0,
       0,
       0,
       0,
@@ -345,14 +372,15 @@
       0,
       0,
       1,
+      1,
       0
     ],
-    "activityFrom": "2026-03-24",
-    "activityTotal90d": 14,
+    "activityFrom": "2026-03-25",
+    "activityTotal90d": 15,
     "contributors": [
       {
         "name": "ToniBirat7",
-        "commits": 94
+        "commits": 95
       },
       {
         "name": "copilot-swe-agent[bot]",
@@ -360,17 +388,27 @@
       }
     ]
   },
-  "generatedAt": "2026-06-21T02:19:24.158756+00:00",
+  "generatedAt": "2026-06-22T04:14:43.368937+00:00",
   "generatedBy": "pulse-deep@0.1.0",
   "commitGraph": [
+    {
+      "sha": "435b605",
+      "parents": [
+        "d93163b"
+      ],
+      "refs": [
+        "master"
+      ],
+      "author": "ToniBirat7",
+      "subject": "chore(pulse): commit tracked .pulse/ project state",
+      "at": "2026-06-21T02:19:45+00:00"
+    },
     {
       "sha": "d93163b",
       "parents": [
         "2f87839"
       ],
-      "refs": [
-        "master"
-      ],
+      "refs": [],
       "author": "ToniBirat7",
       "subject": "chore(pulse): commit tracked .pulse/ project state",
       "at": "2026-06-20T05:46:14+00:00"
@@ -960,16 +998,6 @@
       "author": "ToniBirat7",
       "subject": "update: jwt setup",
       "at": "2025-11-08T15:29:02+00:00"
-    },
-    {
-      "sha": "f8bce17",
-      "parents": [
-        "24f3bf3"
-      ],
-      "refs": [],
-      "author": "ToniBirat7",
-      "subject": "update: jwt setup",
-      "at": "2025-11-08T15:18:22+00:00"
     }
   ],
   "pipeline": {

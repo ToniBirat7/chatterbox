@@ -110,6 +110,66 @@
       "createdAt": "2026-06-21T02:19:24.158295+00:00",
       "updatedAt": "2026-06-21T02:19:24.158296+00:00",
       "note": null
+    },
+    {
+      "id": "m:wire-message-delete-button-to-delete-messages-id",
+      "title": "Wire message delete button to DELETE /messages/:id with optimistic Socket.IO room state update",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-22T04:14:26.581905+00:00",
+      "updatedAt": "2026-06-22T04:14:26.581913+00:00",
+      "note": null
+    },
+    {
+      "id": "m:implement-inline-message-edit-ui-with-textarea-t",
+      "title": "Implement inline message edit UI with textarea toggle and PATCH /messages/:id call",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-22T04:14:26.581922+00:00",
+      "updatedAt": "2026-06-22T04:14:26.581924+00:00",
+      "note": null
+    },
+    {
+      "id": "m:add-read-receipts-track-last-read-at-per-user-co",
+      "title": "Add read receipts: track last_read_at per user-conversation and show delivery/read indicators in chat",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-22T04:14:26.581931+00:00",
+      "updatedAt": "2026-06-22T04:14:26.581932+00:00",
+      "note": null
+    },
+    {
+      "id": "m:wire-message-delete-add-delete-button-on-hover-c",
+      "title": "Wire message delete: add delete button on hover, call DELETE /messages/:id, remove from socket room broadcast",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-22T04:14:43.363893+00:00",
+      "updatedAt": "2026-06-22T04:14:43.363901+00:00",
+      "note": null
+    },
+    {
+      "id": "m:wire-message-edit-inline-edit-input-optimistic-u",
+      "title": "Wire message edit: inline edit input, optimistic update, PATCH /messages/:id + socket broadcast to room",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-22T04:14:43.363911+00:00",
+      "updatedAt": "2026-06-22T04:14:43.363912+00:00",
+      "note": null
+    },
+    {
+      "id": "m:add-read-receipt-tracking-mark-messages-seen-on-",
+      "title": "Add read-receipt tracking: mark messages seen on scroll, show double-tick indicators per message",
+      "status": "open",
+      "source": "machine",
+      "locked": false,
+      "createdAt": "2026-06-22T04:14:43.363919+00:00",
+      "updatedAt": "2026-06-22T04:14:43.363921+00:00",
+      "note": null
     }
   ]
 }
