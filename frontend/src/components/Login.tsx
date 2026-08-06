@@ -101,7 +101,7 @@ const Login: React.FC = () => {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Palm Mind</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Chatterbox</h1>
           <p className="text-gray-400">Sign in to continue to your account</p>
         </div>
 

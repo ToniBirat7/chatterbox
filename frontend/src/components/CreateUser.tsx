@@ -128,7 +128,7 @@ const CreateUser: React.FC = () => {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-gray-400">Join Palm Mind and start chatting</p>
+          <p className="text-gray-400">Join Chatterbox and start chatting</p>
         </div>
 
         <div className="bg-[#1a1a1a] rounded-lg p-8 border border-[#3a3a3a]">
