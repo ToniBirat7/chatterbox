@@ -39,7 +39,7 @@ services:
       chatterbox-postgres:
         condition: service_healthy
     ports:
-      - "127.0.0.1:3003:3000"
+      - "127.0.0.1:${BACKEND_HOST_PORT:-3003}:3000"
     networks:
       - chatterbox_network
     deploy:
@@ -57,7 +57,7 @@ services:
     container_name: chatterbox-frontend
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3002:80"
+      - "127.0.0.1:${FRONTEND_HOST_PORT:-3002}:80"
     networks:
       - chatterbox_network
     deploy:

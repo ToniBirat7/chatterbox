@@ -19,11 +19,19 @@ docker image prune -f
 
 echo "-- Health check --"
 sleep 3
-curl -sf "http://127.0.0.1:3002/" >/dev/null \
-  && echo "OK: frontend responding on :3002" \
+FRONTEND_PORT="3002"
+BACKEND_PORT="3003"
+if [ -f .env ]; then
+  ENV_FRONTEND_PORT="$(grep -E '^FRONTEND_HOST_PORT=' .env | cut -d= -f2)"
+  ENV_BACKEND_PORT="$(grep -E '^BACKEND_HOST_PORT=' .env | cut -d= -f2)"
+  [ -n "$ENV_FRONTEND_PORT" ] && FRONTEND_PORT="$ENV_FRONTEND_PORT"
+  [ -n "$ENV_BACKEND_PORT" ] && BACKEND_PORT="$ENV_BACKEND_PORT"
+fi
+curl -sf "http://127.0.0.1:${FRONTEND_PORT}/" >/dev/null \
+  && echo "OK: frontend responding on :${FRONTEND_PORT}" \
   || echo "WARN: frontend health check failed - check: docker compose logs"
-curl -sf "http://127.0.0.1:3003/health" >/dev/null \
-  && echo "OK: backend responding on :3003" \
+curl -sf "http://127.0.0.1:${BACKEND_PORT}/health" >/dev/null \
+  && echo "OK: backend responding on :${BACKEND_PORT}" \
   || echo "WARN: backend health check failed - check: docker compose logs"
 
 echo "Deployed at $(date)"
